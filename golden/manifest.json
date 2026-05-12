@@ -1,0 +1,30 @@
+[
+  {
+    "id": "wild_v2",
+    "dialogue": "dialogue_sample.json",
+    "master": "poc/patient_master.example.json",
+    "expected_report": "golden/wild_v2/expected_report.json",
+    "expected_evidence": "golden/wild_v2/expected_evidence.json"
+  },
+  {
+    "id": "bp_only",
+    "dialogue": "golden/bp_only/dialogue.json",
+    "master": "poc/patient_master.example.json",
+    "expected_report": "golden/bp_only/expected_report.json",
+    "expected_evidence": null
+  },
+  {
+    "id": "minimal_turn",
+    "dialogue": "golden/minimal_turn/dialogue.json",
+    "master": "poc/patient_master.example.json",
+    "expected_report": "golden/minimal_turn/expected_report.json",
+    "expected_evidence": null
+  },
+  {
+    "id": "cloudy_dialysate",
+    "dialogue": "golden/cloudy_dialysate/dialogue.json",
+    "master": "poc/patient_master.example.json",
+    "expected_report": "golden/cloudy_dialysate/expected_report.json",
+    "expected_evidence": null
+  }
+]

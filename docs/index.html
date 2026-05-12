@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>대화 → 리포트 데모 (GitHub Pages)</title>
+  <style>
+:root {
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #f4f5f7;
+}
+body { margin: 0; }
+.header {
+  background: #1e3a5f;
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+}
+.header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+.muted { color: #6b7280; font-size: 0.9rem; }
+.header .muted { color: #c5d4e8; margin: 0; }
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+.code {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  overflow: auto;
+  font-size: 0.82rem;
+  max-height: 320px;
+}
+.code.inline { max-height: none; margin: 0; }
+.raw { margin-top: 0.75rem; }
+.report-root { margin-top: 0.5rem; }
+.report-section {
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.report-section h3 {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: #f1f5f9;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.report-section-body { padding: 0.75rem 1rem; }
+.kv { margin: 0; }
+.kv dt {
+  font-weight: 600;
+  color: #374151;
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+}
+.kv dt:first-child { margin-top: 0; }
+.kv dd {
+  margin: 0.15rem 0 0 0.75rem;
+  padding-left: 0.25rem;
+}
+.kv ul { margin: 0.25rem 0 0 1rem; padding: 0; }
+.kv .null { color: #9ca3af; }
+.err { color: #b91c1c; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>대화 → 모니터링 리포트 (정적 데모)</h1>
+    <p class="muted">
+      GitHub Actions가 <code>sample.json</code>으로 파이프라인을 돌려 같은 폴더의
+      <code>report.json</code> 등을 생성합니다. 로컬 미리보기는
+      <code>python scripts/build_docs.py</code> 실행 후 이 파일을 열면 됩니다.
+    </p>
+  </header>
+
+  <main class="main">
+    <section class="card" id="panel-status">
+      <h2>상태</h2>
+      <p id="load-status" class="muted">데이터 로딩 중…</p>
+      <p id="meta-line" class="muted" hidden></p>
+    </section>
+
+    <section class="card" id="panel-dialogue">
+      <h2>입력 대화 (input_sample.json)</h2>
+      <pre id="dialogue-preview" class="code"></pre>
+    </section>
+
+    <section class="card" id="panel-report">
+      <h2>리포트 (report.json)</h2>
+      <div id="report-formatted" class="report-root"></div>
+      <details class="raw">
+        <summary>원본 JSON</summary>
+        <pre id="report-raw" class="code"></pre>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>중간 팩트 (facts.json)</h2>
+      <details open>
+        <summary>팩트 JSON</summary>
+        <pre id="facts-raw" class="code"></pre>
+      </details>
+    </section>
+  </main>
+
+  <script>
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function isPlainObject(v) {
+      return v !== null && typeof v === "object" && !Array.isArray(v);
+    }
+    function renderValue(v) {
+      if (v === null || v === undefined) return '<span class="null">—</span>';
+      if (typeof v === "boolean") return v ? "예" : "아니오";
+      if (typeof v === "number") return esc(String(v));
+      if (typeof v === "string") return esc(v);
+      if (Array.isArray(v)) {
+        if (v.length === 0) return '<span class="null">(없음)</span>';
+        if (v.every(function (x) { return typeof x === "string"; })) {
+          return "<ul>" + v.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
+        }
+        return "<pre class=\"code inline\">" + esc(JSON.stringify(v, null, 2)) + "</pre>";
+      }
+      return renderBlock(v);
+    }
+    function renderBlock(obj) {
+      var keys = Object.keys(obj);
+      if (!keys.length) return '<span class="null">(비어 있음)</span>';
+      var html = '<dl class="kv">';
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        html += "<dt>" + esc(k) + "</dt><dd>";
+        var v = obj[k];
+        if (isPlainObject(v)) html += renderBlock(v);
+        else html += renderValue(v);
+        html += "</dd>";
+      }
+      html += "</dl>";
+      return html;
+    }
+    function renderReport(report) {
+      var root = document.getElementById("report-formatted");
+      root.innerHTML = "";
+      if (!report) {
+        root.innerHTML = '<p class="muted">리포트 데이터가 없습니다.</p>';
+        return;
+      }
+      var order = ["A_대상자_정보", "B_복막투석_유형", "C_점검사항"];
+      for (var j = 0; j < order.length; j++) {
+        var key = order[j];
+        if (!(key in report)) continue;
+        var sec = document.createElement("section");
+        sec.className = "report-section";
+        var h = document.createElement("h3");
+        h.textContent = key;
+        sec.appendChild(h);
+        var inner = document.createElement("div");
+        inner.className = "report-section-body";
+        inner.innerHTML = renderBlock(report[key]);
+        sec.appendChild(inner);
+        root.appendChild(sec);
+      }
+    }
+    async function loadJson(name) {
+      var r = await fetch(name, { cache: "no-store" });
+      if (!r.ok) throw new Error(name + " HTTP " + r.status);
+      return r.json();
+    }
+    async function main() {
+      var st = document.getElementById("load-status");
+      try {
+        var input = await loadJson("input_sample.json");
+        document.getElementById("dialogue-preview").textContent = JSON.stringify(input, null, 2);
+        var report = await loadJson("report.json");
+        var facts = await loadJson("facts.json");
+        var meta = await loadJson("meta.json");
+        renderReport(report);
+        document.getElementById("report-raw").textContent = JSON.stringify(report, null, 2);
+        document.getElementById("facts-raw").textContent = JSON.stringify(facts, null, 2);
+        st.textContent = "로드 완료";
+        var ml = document.getElementById("meta-line");
+        ml.hidden = false;
+        ml.textContent =
+          "템플릿 해시: " + (meta.report_template_sha16 || "—") + " · 추출: " + (meta.extract_mode || "—");
+      } catch (e) {
+        st.innerHTML =
+          '<span class="err">JSON을 불러오지 못했습니다.</span> ' +
+          esc(e.message) +
+          "<br /><span class=\"muted\">저장소 루트에서 <code>python scripts/build_docs.py</code> 실행 후 다시 시도하거나, " +
+          "GitHub 저장소 Settings → Pages에서 소스를 <strong>GitHub Actions</strong>로 설정한 뒤 워크플로를 통과했는지 확인하세요.</span>";
+      }
+    }
+    main();
+  </script>
+</body>
+</html>

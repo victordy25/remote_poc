@@ -1,0 +1,153 @@
+:root {
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #f4f5f7;
+}
+
+body {
+  margin: 0;
+}
+
+.header {
+  background: #1e3a5f;
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+}
+
+.header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.header .muted {
+  color: #c5d4e8;
+  margin: 0;
+}
+
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn.primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #1d4ed8;
+}
+
+.btn.primary:hover {
+  background: #1d4ed8;
+}
+
+.status {
+  margin-top: 0.75rem;
+  font-weight: 500;
+}
+
+.paths {
+  margin-top: 0.35rem;
+  word-break: break-all;
+}
+
+.code {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  overflow: auto;
+  font-size: 0.82rem;
+  max-height: 320px;
+}
+
+.code.inline {
+  max-height: none;
+  margin: 0;
+}
+
+.raw {
+  margin-top: 0.75rem;
+}
+
+.report-root {
+  margin-top: 0.5rem;
+}
+
+.report-section {
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.report-section h3 {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: #f1f5f9;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.report-section-body {
+  padding: 0.75rem 1rem;
+}
+
+.kv {
+  margin: 0;
+}
+
+.kv dt {
+  font-weight: 600;
+  color: #374151;
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+}
+
+.kv dt:first-child {
+  margin-top: 0;
+}
+
+.kv dd {
+  margin: 0.15rem 0 0 0.75rem;
+  padding-left: 0.25rem;
+}
+
+.kv ul {
+  margin: 0.25rem 0 0 1rem;
+  padding: 0;
+}
+
+.kv .null {
+  color: #9ca3af;
+}

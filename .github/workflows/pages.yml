@@ -1,0 +1,48 @@
+# GitHub 저장소 루트가 이 폴더(remote_poc)일 때:
+# Settings → Pages → Build and deployment → Source: GitHub Actions
+# main 브랜치 push 시 docs/가 배포됩니다.
+#
+# 모노레포(상위 codex 등)인 경우 이 워크플로를 상위 .github으로 옮기고
+# defaults.run.working-directory / upload path를 remote_poc/docs 로 맞추세요.
+
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install project
+        run: pip install -e .
+
+      - name: Build docs (JSON from pipeline)
+        run: python scripts/build_docs.py
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

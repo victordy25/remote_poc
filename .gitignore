@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+_tmp_report.json
+_tmp_facts.json
+output/**
+!output/.gitkeep
+docs/report.json
+docs/facts.json
+docs/meta.json
+docs/input_sample.json

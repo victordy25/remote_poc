@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://remote_poc.local/schemas/extracted_facts.schema.json",
+  "title": "DialysisCallExtractedFacts",
+  "type": "object",
+  "required": ["schema_version", "facts"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fact_item" }
+    },
+    "narrative_notes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "비구조화 요약(내부용)"
+    }
+  },
+  "$defs": {
+    "fact_source": {
+      "type": "string",
+      "enum": ["stated", "inferred", "unknown"]
+    },
+    "fact_item": {
+      "type": "object",
+      "required": ["path", "value", "source", "evidence_turns"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "점 표기 리포트 경로 예: C_점검사항.임상정보.체중 수치"
+        },
+        "value": {},
+        "source": { "$ref": "#/$defs/fact_source" },
+        "evidence_turns": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "description": "dialogue 배열 인덱스(0-based)"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        }
+      }
+    }
+  }
+}

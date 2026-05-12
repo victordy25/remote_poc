@@ -1,0 +1,151 @@
+{
+  "title": "Patient Monitoring Report Schema",
+  "type": "object",
+  "properties": {
+    "A_대상자_정보": {
+      "type": "object",
+      "properties": {
+        "성명": { "type": "string" },
+        "주민등록번호": { "type": "string", "pattern": "^[0-9]{6}-[0-9]{7}$" },
+        "등록일자": { "type": "string", "format": "date" }
+      },
+      "required": ["성명", "주민등록번호", "등록일자"]
+    },
+    "B_복막투석_유형": {
+      "type": "object",
+      "properties": {
+        "유형": {
+          "type": "string",
+          "enum": ["비자동투석(손투석)", "자동복막투석"]
+        },
+        "모뎀_장착_여부": {
+          "type": "boolean",
+          "description": "자동복막투석 선택 시에만 해당"
+        }
+      }
+    },
+    "C_점검사항": {
+      "type": "object",
+      "properties": {
+        "시행일자": { "type": "string", "format": "date" },
+        "관리자정보": {
+          "type": "object",
+          "properties": {
+            "직종": { "type": "string", "enum": ["의사", "간호사"] },
+            "성명": { "type": "string" },
+            "면허번호": { "type": "string" },
+            "자격번호": { "type": "string" }
+          }
+        },
+        "관리방법": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["전화", "문자"] }
+        },
+        "관리횟수": {
+          "type": "string",
+          "enum": ["1회", "2회", "3회", "4회", "5회", "6회 이상"]
+        },
+        "관리제공_대상": {
+          "type": "string",
+          "enum": ["환자", "환자 및 보호자"]
+        },
+        "관리내용_이해정도": {
+          "type": "string",
+          "enum": ["매우 높음", "높음", "보통", "낮음", "매우 낮음"]
+        },
+        "임상정보": {
+          "type": "object",
+          "properties": {
+            "체중": {
+              "type": "object",
+              "properties": {
+                "측정가능여부": { "type": "boolean" },
+                "수치": { "type": "number", "unit": "kg" }
+              }
+            },
+            "평균_제수량": { "type": "number", "unit": "cc" },
+            "혈압": { "type": "string", "description": "mmHg" },
+            "잔여_신기능_유무": { "type": "boolean" },
+            "특이사항": { "type": "string" }
+          }
+        },
+        "위생_및_환경관리": {
+          "type": "object",
+          "properties": {
+            "상태": { "type": "string", "enum": ["양호", "이상"] },
+            "특이사항": { "type": "string" }
+          }
+        },
+        "투석_도관_및_환자상태": {
+          "type": "object",
+          "properties": {
+            "투석액_주입_상태": {
+              "type": "object",
+              "properties": {
+                "결과": { "type": "string", "enum": ["양호", "저류시간 부족"] },
+                "특이사항": { "type": "string" }
+              }
+            },
+            "투석액_배액_상태": {
+              "type": "object",
+              "properties": {
+                "결과": { "type": "string", "enum": ["양호", "제수량 부족"] },
+                "특이사항": { "type": "string" }
+              }
+            },
+            "투석액_상태": {
+              "type": "object",
+              "properties": {
+                "결과": { "type": "string", "enum": ["양호", "이상"] },
+                "특이사항": { "type": "string" }
+              }
+            },
+            "출구_부위_이상_여부": {
+              "type": "object",
+              "properties": {
+                "증상": {
+                  "type": "array",
+                  "items": { "type": "string", "enum": ["양호", "발적", "진물"] }
+                },
+                "특이사항": { "type": "string" }
+              }
+            },
+            "환자_상태": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["호흡곤란", "복통", "변비", "부종", "소변량 감소", "수면장애", "오심/구토", "소양증", "어지러움"]
+              }
+            }
+          }
+        },
+        "서비스_제공내용": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "1) 질병에 대한 포괄적 관리",
+              "2) 체중/제수량 수치와 측정 방법 관리",
+              "3) 식이관리",
+              "4) 운동요법",
+              "5) 합병증 예방관리",
+              "6) 기기 사용법/비자동투석방법 및 주의사항",
+              "7) 복약지도",
+              "8) 합병증 대응"
+            ]
+          }
+        },
+        "보고_의사": { "type": "boolean" },
+        "내원_지시": {
+          "type": "string",
+          "enum": ["외래", "응급실", "없음", "기타"]
+        },
+        "환자_순응도": {
+          "type": "string",
+          "enum": ["매우 높음", "높음", "보통", "낮음", "매우 낮음"]
+        },
+        "기타_기재사항": { "type": "string" }
+      }
+    }
+  }
+}

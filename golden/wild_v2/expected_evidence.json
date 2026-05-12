@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "path_contains": "임상정보.체중",
+      "evidence_must_include_turn": 3
+    },
+    {
+      "path_contains": "임상정보.혈압",
+      "evidence_must_include_turn": 3
+    },
+    {
+      "path_contains": "투석액_배액_상태.결과",
+      "evidence_must_include_turn": 5
+    },
+    {
+      "path_contains": "내원_지시",
+      "evidence_must_include_turn": 8
+    }
+  ]
+}
